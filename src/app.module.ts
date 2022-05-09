@@ -1,9 +1,11 @@
+import { StudentEntity } from './student/entities/student.entity';
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [UserEntity],
+      entities: [UserEntity, StudentEntity],
       synchronize: true,
       ssl: true,
       extra: {
@@ -27,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     ConfigModule.forRoot({ expandVariables: true }),
     AuthModule,
+    StudentModule,
   ],
 })
 export class AppModule {}

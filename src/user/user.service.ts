@@ -18,7 +18,7 @@ export class UserService {
   }
 
   findAllUsers() {
-    return this.userRepository.find();
+    // return this.userRepository.find({ relations: { student: true } });
   }
 
   findOneUser(id: number) {

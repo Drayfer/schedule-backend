@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import * as moment from 'moment';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
 
   async login(dto: LoginUserDto) {
     console.log(dto);
+    console.log(`${process.env.TOKEN_EXP}`);
     const user = await this.validateUser(dto);
     const { token } = await this.generateToken(user);
 
@@ -31,6 +33,8 @@ export class AuthService {
       email: user.email,
       id: user.id,
       token,
+      activate: user.activate,
+      expToken: moment().add(Number(process.env.TOKEN_EXP), 'days').unix(),
     };
   }
 
@@ -55,7 +59,10 @@ export class AuthService {
   }
 
   private async generateToken(user) {
-    const payload = { email: user.email, id: user.id };
+    const payload = {
+      email: user.email,
+      id: user.id,
+    };
     return {
       token: this.jwtService.sign(payload),
     };
@@ -65,12 +72,12 @@ export class AuthService {
     const user = await this.userService.getUserByEmail(dto.email);
     if (!user)
       throw new UnauthorizedException({
-        message: 'Неккоректный email или password',
+        message: 'Invalid email или password',
       });
     const isPasswordsMatch = await bcrypt.compare(dto.password, user.password);
     if (user && isPasswordsMatch) return user;
     throw new UnauthorizedException({
-      message: 'Неккоректный email или password',
+      message: 'Invalid email или password',
     });
   }
 
