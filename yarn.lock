@@ -4508,6 +4508,11 @@ moment@2.11.2:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.11.2.tgz#87968e5f95ac038c2e42ac959c75819cd3f52901"
   integrity sha1-h5aOX5WsA4wuQqyVnHWBnNP1KQE=
 
+moment@^2.29.3:
+  version "2.29.3"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
+  integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
+
 moo@^0.5.0, moo@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/moo/-/moo-0.5.1.tgz#7aae7f384b9b09f620b6abf6f74ebbcd1b65dbc4"
@@ -5236,12 +5241,22 @@ randexp@0.4.6:
     discontinuous-range "1.0.0"
     ret "~0.1.10"
 
+random-number@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/random-number/-/random-number-0.0.9.tgz#5907b96f05041807c52aed601c869524d86fbbd5"
+  integrity sha512-ipG3kRCREi/YQpi2A5QGcvDz1KemohovWmH6qGfboVyyGdR2t/7zQz0vFxrfxpbHQgPPdtVlUDaks3aikD1Ljw==
+
 randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/randombytes/-/randombytes-2.1.0.tgz"
   integrity sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==
   dependencies:
     safe-buffer "^5.1.0"
+
+randomcolor@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/randomcolor/-/randomcolor-0.6.2.tgz#7a57362ae1a1278439aeed2c15e5deb8ea33f56d"
+  integrity sha512-Mn6TbyYpFgwFuQ8KJKqf3bqqY9O1y37/0jgSK/61PUxV4QfIMv0+K2ioq8DfOjkBslcjwSzRfIDEXfzA9aCx7A==
 
 range-parser@~1.2.1:
   version "1.2.1"
