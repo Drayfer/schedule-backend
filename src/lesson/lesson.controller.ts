@@ -35,4 +35,9 @@ export class LessonController {
   update(@Param('id') id: string, @Body() dto: UpdateLessonDto) {
     return this.lessonService.update(Number(id), dto);
   }
+
+  @Delete('deleteSome/:studentId')
+  updateDelete(@Param('studentId') studentId: string) {
+    return this.lessonService.updateDelete(Number(studentId));
+  }
 }
