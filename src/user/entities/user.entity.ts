@@ -1,3 +1,4 @@
+import { LessonEntity } from './../../lesson/entities/lesson.entity';
 import { StudentEntity } from './../../student/entities/student.entity';
 import {
   Entity,
@@ -31,9 +32,9 @@ export class UserEntity {
   @UpdateDateColumn()
   updatedDate: Date;
 
-  // @OneToMany(() => StudentEntity, (student) => student.user)
-  // student: StudentEntity[];
-
   @OneToMany(() => StudentEntity, (student) => student.user)
   students: StudentEntity[];
+
+  @OneToMany(() => LessonEntity, (lesson) => lesson.user)
+  lessons: LessonEntity[];
 }
