@@ -97,4 +97,8 @@ export class LessonService {
       fullName: `${name}${surname ? ' ' + surname.slice(0, 1) + '.' : ''}`,
     };
   }
+
+  async updateDelete(studentId: number) {
+    await this.lessonRepository.delete({ studentId, complete: false });
+  }
 }

@@ -49,13 +49,24 @@ export class StudentService {
   }
 
   async update(id: number, dto: UpdateStudentDto) {
-    const { id: studentId } = await this.studentRepository.findOneBy({ id });
+    const { id: studentId, balance } = await this.studentRepository.findOneBy({
+      id,
+    });
+    let currentBalance: { balance: number } | {} = {};
+
+    if (dto.balance) {
+      currentBalance = {
+        balance: Number(dto.balance) + balance,
+      };
+    }
+
     await this.studentRepository.update(
       {
         id: studentId,
       },
       {
         ...dto,
+        ...currentBalance,
         updatedDate: new Date(),
       },
     );
