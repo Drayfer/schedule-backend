@@ -1,3 +1,4 @@
+import { GetTodayLessonsDto } from './dto/getToday-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { StudentEntity } from './../student/entities/student.entity';
 import { GetAllLessonsDto } from './dto/getAll-lesson.dto';
@@ -6,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual, LessThanOrEqual, Between } from 'typeorm';
 import { LessonEntity } from './entities/lesson.entity';
 import { Injectable, HttpException, BadRequestException } from '@nestjs/common';
-import moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable()
 export class LessonService {
@@ -18,17 +19,6 @@ export class LessonService {
   ) {}
 
   async create(dto: CreateLessonDto) {
-    const sameTime = await this.lessonRepository.findOne({
-      where: {
-        date: dto.date,
-        userId: dto.userId,
-      },
-    });
-    // console.log(11111, sameTime);
-    // console.log(222, moment.utc(dto.date));
-    // if (sameTime) {
-    //   throw new BadRequestException('This time busy already');
-    // }
     const lesson = await this.lessonRepository.save(dto);
     const student = await this.studentRepository.findOne({
       where: {
@@ -49,7 +39,10 @@ export class LessonService {
         },
         where: {
           userId: dto.userId,
-          date: Between(dto.dateStart, dto.dateEnd),
+          date: Between(
+            moment(dto.dateStart).startOf('day').toDate(),
+            moment(dto.dateEnd).endOf('day').toDate(),
+          ),
         },
         order: {
           date: 'ASC',
@@ -100,5 +93,36 @@ export class LessonService {
 
   async updateDelete(studentId: number) {
     await this.lessonRepository.delete({ studentId, complete: false });
+  }
+
+  async getToday(dto: GetTodayLessonsDto) {
+    const lessons = await this.lessonRepository
+      .find({
+        relations: {
+          student: true,
+        },
+        where: {
+          userId: dto.userId,
+          date: Between(
+            moment(dto.date).startOf('day').toDate(),
+            moment(dto.date).endOf('day').toDate(),
+          ),
+        },
+        order: {
+          date: 'ASC',
+        },
+      })
+      .then((data) => {
+        return data.map((student) => {
+          const lesson = {
+            ...student,
+            fullName:
+              `${student.student.name} ${student.student.surname}`.trim(),
+          };
+          delete lesson.student;
+          return lesson;
+        });
+      });
+    return lessons;
   }
 }
