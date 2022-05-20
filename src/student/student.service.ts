@@ -49,7 +49,11 @@ export class StudentService {
   }
 
   async update(id: number, dto: UpdateStudentDto) {
-    const { id: studentId, balance } = await this.studentRepository.findOneBy({
+    const {
+      id: studentId,
+      balance,
+      userId,
+    } = await this.studentRepository.findOneBy({
       id,
     });
     let currentBalance: { balance: number } | {} = {};

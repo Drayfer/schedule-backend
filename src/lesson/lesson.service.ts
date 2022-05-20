@@ -1,12 +1,13 @@
+import { UserEntity } from './../user/entities/user.entity';
 import { GetTodayLessonsDto } from './dto/getToday-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { StudentEntity } from './../student/entities/student.entity';
 import { GetAllLessonsDto } from './dto/getAll-lesson.dto';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual, LessThanOrEqual, Between } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { LessonEntity } from './entities/lesson.entity';
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class LessonService {
     private lessonRepository: Repository<LessonEntity>,
     @InjectRepository(StudentEntity)
     private studentRepository: Repository<StudentEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async create(dto: CreateLessonDto) {
@@ -70,7 +73,7 @@ export class LessonService {
   }
 
   async update(id: number, dto: UpdateLessonDto) {
-    const { studentId } = await this.lessonRepository.findOneBy({ id });
+    const { studentId, userId } = await this.lessonRepository.findOneBy({ id });
     await this.lessonRepository.update(
       {
         id,
@@ -79,6 +82,20 @@ export class LessonService {
         ...dto,
       },
     );
+    if (dto.complete === false || dto.complete === true) {
+      const { lessonsHistory } = await this.userRepository.findOneBy({
+        id: userId,
+      });
+      await this.userRepository.update(
+        { id: userId },
+        {
+          lessonsHistory: dto.complete
+            ? lessonsHistory + 1
+            : lessonsHistory - 1,
+        },
+      );
+    }
+
     const { name, surname } = await this.studentRepository.findOneBy({
       id: studentId,
     });
