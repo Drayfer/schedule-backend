@@ -26,6 +26,9 @@ export class UserEntity {
   @Column({ default: false })
   activate: boolean;
 
+  @Column({ default: 0 })
+  lessonsHistory: number;
+
   @CreateDateColumn()
   createdDate: Date;
 
