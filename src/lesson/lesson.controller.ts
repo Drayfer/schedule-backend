@@ -8,11 +8,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import moment from 'moment';
 
 @Controller('lesson')
 export class LessonController {
@@ -52,5 +54,29 @@ export class LessonController {
   @Post('today')
   getToday(@Body() dto: GetTodayLessonsDto) {
     return this.lessonService.getToday(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('copyLessonsWeek')
+  copyLessonsWeek(@Body() dto: { userId: number; dateStart: Date }) {
+    return this.lessonService.copyLessonsWeek(dto.userId, dto.dateStart);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('deleteLessonsWeek')
+  deleteLessonsWeek(@Body() dto: { userId: number; dateStart: Date }) {
+    return this.lessonService.deleteLessonsWeek(dto.userId, dto.dateStart);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('deleteLessonsDay')
+  deleteLessonsDay(
+    @Body() dto: { userId: number; dateStart: Date; date: Date },
+  ) {
+    return this.lessonService.deleteLessonsDay(
+      dto.userId,
+      dto.dateStart,
+      dto.date,
+    );
   }
 }
