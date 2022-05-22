@@ -7,7 +7,12 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { LessonEntity } from './entities/lesson.entity';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  BadRequestException,
+  HttpStatus,
+} from '@nestjs/common';
 import * as moment from 'moment';
 
 @Injectable()
@@ -141,5 +146,98 @@ export class LessonService {
         });
       });
     return lessons;
+  }
+
+  async copyLessonsWeek(userId: number, dateStart: Date) {
+    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+    const dateStart2 = moment(dateStart).add(1, 'week').toDate();
+    const dateEnd2 = moment(dateStart2).add(6, 'days').toDate();
+
+    const lessons = await this.findAll({ userId, dateStart, dateEnd });
+    if (!lessons.length)
+      throw new HttpException(
+        'The previous week is empty.',
+        HttpStatus.BAD_REQUEST,
+      );
+    const lessons2 = await this.findAll({
+      userId,
+      dateStart: dateStart2,
+      dateEnd: dateEnd2,
+    }).then((items) =>
+      items.filter((item) =>
+        lessons.find(
+          (lesson) =>
+            moment(lesson.date).toString() ===
+            moment(item.date).subtract(1, 'weeks').toString(),
+        ),
+      ),
+    );
+
+    const notCopy =
+      lessons.length &&
+      lessons.some((les, i) => les?.studentId !== lessons2[i]?.studentId);
+
+    if (notCopy) {
+      const newLessonsWeek = lessons.map((lesson) => {
+        const obj = {
+          ...lesson,
+          date: moment(lesson.date).add(1, 'weeks').toDate(),
+          complete: false,
+        };
+        delete obj.id;
+        return obj;
+      });
+
+      await this.lessonRepository.save(newLessonsWeek);
+      // const a = await this.findAll({ userId, dateStart, dateEnd });
+      return this.findAll({
+        userId,
+        dateStart: dateStart2,
+        dateEnd: dateEnd2,
+      });
+    }
+
+    throw new HttpException(
+      'The schedule has already been copied',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  async deleteLessonsWeek(userId: number, dateStart: Date) {
+    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+
+    await this.lessonRepository.delete({
+      userId,
+      date: Between(
+        moment(dateStart).startOf('day').toDate(),
+        moment(dateEnd).endOf('day').toDate(),
+      ),
+      complete: false,
+    });
+
+    return this.findAll({
+      userId,
+      dateStart: dateStart,
+      dateEnd: dateEnd,
+    });
+  }
+
+  async deleteLessonsDay(userId: number, dateStart: Date, date: Date) {
+    await this.lessonRepository.delete({
+      userId,
+      date: Between(
+        moment(date).startOf('day').toDate(),
+        moment(date).endOf('day').toDate(),
+      ),
+      complete: false,
+    });
+
+    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+
+    return this.findAll({
+      userId,
+      dateStart: dateStart,
+      dateEnd: dateEnd,
+    });
   }
 }
