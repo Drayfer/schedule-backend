@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './discipline/entities/discipline.entity';
 import { LessonEntity } from './lesson/entities/lesson.entity';
 import { StudentEntity } from './student/entities/student.entity';
 import { Module } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { StudentModule } from './student/student.module';
 import { LessonModule } from './lesson/lesson.module';
+import { DisciplineModule } from './discipline/discipline.module';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { LessonModule } from './lesson/lesson.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [UserEntity, StudentEntity, LessonEntity],
+      entities: [UserEntity, StudentEntity, LessonEntity, DisciplineEntity],
       synchronize: true,
       ssl: true,
       extra: {
@@ -33,6 +35,7 @@ import { LessonModule } from './lesson/lesson.module';
     AuthModule,
     StudentModule,
     LessonModule,
+    DisciplineModule,
   ],
 })
 export class AppModule {}

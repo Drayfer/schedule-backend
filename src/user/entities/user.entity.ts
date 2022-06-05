@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../../discipline/entities/discipline.entity';
 import { LessonEntity } from './../../lesson/entities/lesson.entity';
 import { StudentEntity } from './../../student/entities/student.entity';
 import {
@@ -29,6 +30,12 @@ export class UserEntity {
   @Column({ default: 0 })
   lessonsHistory: number;
 
+  @Column({ default: 0 })
+  rateWithBalance: number;
+
+  @Column({ default: 0 })
+  rateWithoutBalance: number;
+
   @CreateDateColumn()
   createdDate: Date;
 
@@ -40,4 +47,7 @@ export class UserEntity {
 
   @OneToMany(() => LessonEntity, (lesson) => lesson.user)
   lessons: LessonEntity[];
+
+  @OneToMany(() => DisciplineEntity, (discipline) => discipline.user)
+  discipline: DisciplineEntity[];
 }

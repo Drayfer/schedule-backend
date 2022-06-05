@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../discipline/entities/discipline.entity';
 import { UserEntity } from './../user/entities/user.entity';
 import { StudentEntity } from './entities/student.entity';
 import { Injectable, HttpException } from '@nestjs/common';
@@ -14,6 +15,8 @@ export class StudentService {
     private studentRepository: Repository<StudentEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(DisciplineEntity)
+    private disciplineRepository: Repository<DisciplineEntity>,
   ) {}
 
   async create(dto: CreateStudentDto) {
@@ -29,6 +32,9 @@ export class StudentService {
       },
       order: {
         createdDate: 'DESC',
+      },
+      relations: {
+        disciplines: true,
       },
     });
     return students;
@@ -49,29 +55,25 @@ export class StudentService {
   }
 
   async update(id: number, dto: UpdateStudentDto) {
-    const {
-      id: studentId,
-      balance,
-      userId,
-    } = await this.studentRepository.findOneBy({
+    const { id: studentId, balance } = await this.studentRepository.findOneBy({
       id,
     });
-    let currentBalance: { balance: number } | {} = {};
 
-    if (dto.balance) {
-      currentBalance = {
-        balance: Number(dto.balance) + balance,
-      };
-    }
-
+    // let disciplines: DisciplineEntity[];
+    // if (dto.updateDisciplines) {
+    //   disciplines = await this.disciplineRepository.findByIds(
+    //     dto.updateDisciplines,
+    //   );
+    // }
     await this.studentRepository.update(
       {
         id: studentId,
       },
       {
         ...dto,
-        ...currentBalance,
+        balance: dto.balance ? Number(dto.balance) + balance : balance,
         updatedDate: new Date(),
+        // disciplines: disciplines.length && disciplines,
       },
     );
     return this.studentRepository.findOneBy({ id });
