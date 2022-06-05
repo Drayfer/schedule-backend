@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../discipline/entities/discipline.entity';
 import { UserModule } from './../user/user.module';
 import { UserEntity } from './../user/entities/user.entity';
 import { AuthModule } from './../auth/auth.module';
@@ -9,7 +10,7 @@ import { StudentController } from './student.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudentEntity, UserEntity]),
+    TypeOrmModule.forFeature([StudentEntity, UserEntity, DisciplineEntity]),
     forwardRef(() => AuthModule),
     UserModule,
   ],

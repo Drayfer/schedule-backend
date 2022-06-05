@@ -23,8 +23,8 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginUserDto) {
-    console.log(dto);
-    console.log(`${process.env.TOKEN_EXP}`);
+    // console.log(dto);
+    // console.log(`${process.env.TOKEN_EXP}`);
     const user = await this.validateUser(dto);
     const { token } = await this.generateToken(user);
 

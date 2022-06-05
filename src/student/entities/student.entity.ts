@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../../discipline/entities/discipline.entity';
 import { LessonEntity } from './../../lesson/entities/lesson.entity';
 import { UserEntity } from './../../user/entities/user.entity';
 import {
@@ -9,6 +10,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 
 @Entity('Student')
@@ -52,6 +54,12 @@ export class StudentEntity {
   @Column({ nullable: true })
   color: string;
 
+  @Column({ nullable: true })
+  parent: string;
+
+  @Column({ nullable: true })
+  age: number;
+
   @Column()
   userId: number;
 
@@ -64,4 +72,7 @@ export class StudentEntity {
 
   @OneToMany(() => LessonEntity, (lesson) => lesson.student)
   lessons: LessonEntity[];
+
+  @ManyToMany(() => DisciplineEntity, (discipline) => discipline.students)
+  disciplines: DisciplineEntity[];
 }

@@ -153,7 +153,20 @@ export class LessonService {
     const dateStart2 = moment(dateStart).add(1, 'week').toDate();
     const dateEnd2 = moment(dateStart2).add(6, 'days').toDate();
 
-    const lessons = await this.findAll({ userId, dateStart, dateEnd });
+    const prevWeekStudents = await this.studentRepository.find({
+      where: {
+        userId,
+        delete: false,
+        break: false,
+      },
+    });
+
+    const lessons = await (
+      await this.findAll({ userId, dateStart, dateEnd })
+    ).filter((les) => {
+      return prevWeekStudents.find((student) => student.id === les.studentId);
+    });
+
     if (!lessons.length)
       throw new HttpException(
         'The previous week is empty.',
@@ -189,7 +202,7 @@ export class LessonService {
       });
 
       await this.lessonRepository.save(newLessonsWeek);
-      // const a = await this.findAll({ userId, dateStart, dateEnd });
+
       return this.findAll({
         userId,
         dateStart: dateStart2,
