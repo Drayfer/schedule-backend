@@ -1,5 +1,4 @@
 import { StudentEntity } from './../../student/entities/student.entity';
-import { LessonEntity } from './../../lesson/entities/lesson.entity';
 import { UserEntity } from './../../user/entities/user.entity';
 import {
   Entity,
@@ -9,7 +8,6 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
@@ -36,9 +34,6 @@ export class DisciplineEntity {
 
   @Column()
   userId: number;
-
-  // @Column()
-  // studentId: number[];
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
