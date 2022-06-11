@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DisciplineService } from './discipline.service';
 import { CreateDisciplineDto } from './dto/create-discipline.dto';
@@ -15,11 +17,13 @@ import { UpdateDisciplineDto } from './dto/update-discipline.dto';
 export class DisciplineController {
   constructor(private readonly disciplineService: DisciplineService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   create(@Body() dto: CreateDisciplineDto) {
     return this.disciplineService.create(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   update(
     @Param('id') id: string,
@@ -28,23 +32,15 @@ export class DisciplineController {
     return this.disciplineService.update(Number(id), updateDisciplineDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('all/:id')
   findAll(@Param('id') id: string) {
     return this.disciplineService.findAll(Number(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.disciplineService.remove(+id);
   }
-
-  // @Get()
-  // findAll() {
-  //   return this.disciplineService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.disciplineService.findOne(+id);
-  // }
 }

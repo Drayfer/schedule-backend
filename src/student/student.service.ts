@@ -59,12 +59,6 @@ export class StudentService {
       id,
     });
 
-    // let disciplines: DisciplineEntity[];
-    // if (dto.updateDisciplines) {
-    //   disciplines = await this.disciplineRepository.findByIds(
-    //     dto.updateDisciplines,
-    //   );
-    // }
     await this.studentRepository.update(
       {
         id: studentId,
@@ -73,7 +67,6 @@ export class StudentService {
         ...dto,
         balance: dto.balance ? Number(dto.balance) + balance : balance,
         updatedDate: new Date(),
-        // disciplines: disciplines.length && disciplines,
       },
     );
     return this.studentRepository.findOneBy({ id });
