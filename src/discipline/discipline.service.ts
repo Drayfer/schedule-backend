@@ -47,23 +47,16 @@ export class DisciplineService {
       order: {
         createdDate: 'DESC',
       },
+      withDeleted: true,
     });
     return disciplines;
   }
 
   async remove(id: number) {
-    await this.disciplineRepository.delete({ id });
+    try {
+      await this.disciplineRepository.delete({ id });
+    } catch {
+      await this.disciplineRepository.softRemove({ id });
+    }
   }
-
-  // findAll() {
-  //   return `This action returns all discipline`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} discipline`;
-  // }
-
-  // update(id: number, updateDisciplineDto: UpdateDisciplineDto) {
-  //   return `This action updates a #${id} discipline`;
-  // }
 }

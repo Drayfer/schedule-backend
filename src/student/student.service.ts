@@ -32,6 +32,9 @@ export class StudentService {
       },
       order: {
         createdDate: 'DESC',
+        disciplines: {
+          title: 'ASC',
+        },
       },
       relations: {
         disciplines: true,
@@ -58,7 +61,8 @@ export class StudentService {
     const { id: studentId, balance } = await this.studentRepository.findOneBy({
       id,
     });
-
+    delete dto.disciplines;
+    delete dto.updateDisciplines;
     await this.studentRepository.update(
       {
         id: studentId,
@@ -69,6 +73,11 @@ export class StudentService {
         updatedDate: new Date(),
       },
     );
-    return this.studentRepository.findOneBy({ id });
+    return this.studentRepository.find({
+      where: { id },
+      relations: {
+        disciplines: true,
+      },
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../../discipline/entities/discipline.entity';
 import { StudentEntity } from './../../student/entities/student.entity';
 import { UserEntity } from './../../user/entities/user.entity';
 import {
@@ -27,8 +28,8 @@ export class LessonEntity {
   @Column({ default: false })
   complete: boolean;
 
-  @Column({ default: 'general' })
-  category: string;
+  @Column({ nullable: true })
+  disciplineId: number;
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
@@ -37,4 +38,8 @@ export class LessonEntity {
   @ManyToOne(() => StudentEntity)
   @JoinColumn({ name: 'studentId', referencedColumnName: 'id' })
   student: StudentEntity;
+
+  @ManyToOne(() => DisciplineEntity)
+  @JoinColumn({ name: 'disciplineId', referencedColumnName: 'id' })
+  discipline: DisciplineEntity;
 }

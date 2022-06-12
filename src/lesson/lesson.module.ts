@@ -1,3 +1,4 @@
+import { DisciplineEntity } from './../discipline/entities/discipline.entity';
 import { UserEntity } from './../user/entities/user.entity';
 import { StudentEntity } from './../student/entities/student.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,7 +10,12 @@ import { LessonController } from './lesson.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LessonEntity, StudentEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      LessonEntity,
+      StudentEntity,
+      UserEntity,
+      DisciplineEntity,
+    ]),
     AuthModule,
   ],
   controllers: [LessonController],

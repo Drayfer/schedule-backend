@@ -11,6 +11,6 @@ export class CreateLessonDto {
   date: Date;
 
   @IsOptional()
-  @IsString()
-  category: string;
+  @IsNumber()
+  disciplineId: number;
 }
