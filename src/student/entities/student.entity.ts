@@ -70,9 +70,13 @@ export class StudentEntity {
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
 
-  @OneToMany(() => LessonEntity, (lesson) => lesson.student)
+  @OneToMany(() => LessonEntity, (lesson) => lesson.student, {
+    onDelete: 'CASCADE',
+  })
   lessons: LessonEntity[];
 
-  @ManyToMany(() => DisciplineEntity, (discipline) => discipline.students)
+  @ManyToMany(() => DisciplineEntity, (discipline) => discipline.students, {
+    onDelete: 'CASCADE',
+  })
   disciplines: DisciplineEntity[];
 }

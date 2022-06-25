@@ -1,3 +1,4 @@
+import { OptionEntity } from './../../option/entities/option.entity';
 import { DisciplineEntity } from './../../discipline/entities/discipline.entity';
 import { LessonEntity } from './../../lesson/entities/lesson.entity';
 import { StudentEntity } from './../../student/entities/student.entity';
@@ -8,6 +9,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('Users')
@@ -30,12 +33,6 @@ export class UserEntity {
   @Column({ default: 0 })
   lessonsHistory: number;
 
-  @Column({ default: 0 })
-  rateWithBalance: number;
-
-  @Column({ default: 0 })
-  rateWithoutBalance: number;
-
   @CreateDateColumn()
   createdDate: Date;
 
@@ -50,4 +47,8 @@ export class UserEntity {
 
   @OneToMany(() => DisciplineEntity, (discipline) => discipline.user)
   discipline: DisciplineEntity[];
+
+  // @OneToOne(() => OptionEntity)
+  // @JoinColumn({ name: 'optionId', referencedColumnName: 'id' })
+  // option: OptionEntity;
 }

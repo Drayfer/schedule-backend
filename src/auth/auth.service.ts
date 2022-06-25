@@ -25,13 +25,14 @@ export class AuthService {
   async login(dto: LoginUserDto) {
     const user = await this.validateUser(dto);
     const { token } = await this.generateToken(user);
-
+    delete user.password;
     return {
-      name: user.name,
-      email: user.email,
-      id: user.id,
+      // name: user.name,
+      // email: user.email,
+      // id: user.id,
       token,
-      activate: user.activate,
+      // activate: user.activate,
+      ...user,
       expToken: moment().add(Number(process.env.TOKEN_EXP), 'days').unix(),
     };
   }

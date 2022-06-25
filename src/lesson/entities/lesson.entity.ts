@@ -35,7 +35,9 @@ export class LessonEntity {
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
 
-  @ManyToOne(() => StudentEntity)
+  @ManyToOne(() => StudentEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'studentId', referencedColumnName: 'id' })
   student: StudentEntity;
 

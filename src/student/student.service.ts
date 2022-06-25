@@ -1,3 +1,4 @@
+import { LessonEntity } from './../lesson/entities/lesson.entity';
 import { DisciplineEntity } from './../discipline/entities/discipline.entity';
 import { UserEntity } from './../user/entities/user.entity';
 import { StudentEntity } from './entities/student.entity';
@@ -17,6 +18,8 @@ export class StudentService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(DisciplineEntity)
     private disciplineRepository: Repository<DisciplineEntity>,
+    @InjectRepository(LessonEntity)
+    private lessonRepository: Repository<LessonEntity>,
   ) {}
 
   async create(dto: CreateStudentDto) {
@@ -46,6 +49,16 @@ export class StudentService {
   async remove(id: number) {
     // await this.studentRepository.delete({ id });
     const { id: studentId } = await this.studentRepository.findOneBy({ id });
+    const lessons = await this.lessonRepository.find({
+      where: {
+        studentId,
+      },
+    });
+    if (!lessons.some((lesson) => lesson.complete)) {
+      console.log(lessons);
+      this.studentRepository.delete({ id });
+      return;
+    }
     await this.studentRepository.update(
       {
         id: studentId,
@@ -73,7 +86,7 @@ export class StudentService {
         updatedDate: new Date(),
       },
     );
-    return this.studentRepository.find({
+    return this.studentRepository.findOne({
       where: { id },
       relations: {
         disciplines: true,

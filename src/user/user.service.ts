@@ -1,3 +1,4 @@
+import { OptionEntity } from './../option/entities/option.entity';
 import { UserEntity } from './entities/user.entity';
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -11,10 +12,16 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(OptionEntity)
+    private optionRepository: Repository<OptionEntity>,
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    return this.userRepository.save(dto);
+    const user = await this.userRepository.save(dto);
+    await this.optionRepository.save({
+      userId: user.id,
+    });
+    return user;
   }
 
   findAllUsers() {
