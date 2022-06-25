@@ -1,3 +1,4 @@
+import { OptionEntity } from './option/entities/option.entity';
 import { DisciplineEntity } from './discipline/entities/discipline.entity';
 import { LessonEntity } from './lesson/entities/lesson.entity';
 import { StudentEntity } from './student/entities/student.entity';
@@ -10,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { StudentModule } from './student/student.module';
 import { LessonModule } from './lesson/lesson.module';
 import { DisciplineModule } from './discipline/discipline.module';
+import { OptionModule } from './option/option.module';
 
 @Module({
   imports: [
@@ -22,7 +24,13 @@ import { DisciplineModule } from './discipline/discipline.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [UserEntity, StudentEntity, LessonEntity, DisciplineEntity],
+      entities: [
+        UserEntity,
+        StudentEntity,
+        LessonEntity,
+        DisciplineEntity,
+        OptionEntity,
+      ],
       synchronize: true,
       ssl: true,
       extra: {
@@ -36,6 +44,7 @@ import { DisciplineModule } from './discipline/discipline.module';
     StudentModule,
     LessonModule,
     DisciplineModule,
+    OptionModule,
   ],
 })
 export class AppModule {}
