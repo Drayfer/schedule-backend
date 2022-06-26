@@ -27,6 +27,9 @@ export class OptionEntity {
   @Column({ default: 100 })
   notifyVolume: number;
 
+  @Column({ default: 'USD' })
+  currency: string;
+
   @Column()
   userId: number;
 

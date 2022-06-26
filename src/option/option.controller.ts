@@ -25,23 +25,18 @@ export class OptionController {
     return this.optionService.findAll(Number(id));
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.optionService.findAll();
-  // }
+  @Patch('update/:id')
+  update(@Param('id') id: string, @Body() dto: UpdateOptionDto) {
+    return this.optionService.update(Number(id), dto);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.optionService.findOne(+id);
-  // }
+  @Get('statistic/:userId')
+  getSttistic(@Param('userId') userId: string) {
+    return this.optionService.getSttistic(Number(userId));
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
-  //   return this.optionService.update(+id, updateOptionDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.optionService.remove(+id);
-  // }
+  @Get('statistic/chart/:userId')
+  getChart(@Param('userId') userId: string) {
+    return this.optionService.getChart(Number(userId));
+  }
 }
