@@ -21,10 +21,6 @@ export class OptionService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  // create(dto: CreateOptionDto) {
-  //   return this.optionRepository.save(dto);
-  // }
-
   async findAll(id: number) {
     const options = await this.optionRepository.findOne({
       where: {
