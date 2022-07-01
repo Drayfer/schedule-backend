@@ -58,7 +58,7 @@ export class StudentEntity {
   parent: string;
 
   @Column({ nullable: true })
-  age: number;
+  birthday: Date;
 
   @Column()
   userId: number;
