@@ -16,7 +16,7 @@ export class LessonEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'timestamptz' })
   date: Date;
 
   @Column()
