@@ -222,8 +222,10 @@ export class LessonService {
     await this.lessonRepository.delete({
       userId,
       date: Between(
-        moment(dateStart).startOf('day').toDate(),
-        moment(dateEnd).endOf('day').toDate(),
+        // moment(dateStart).startOf('day').toDate(),
+        // moment(dateEnd).endOf('day').toDate(),
+        new Date(moment(dateStart).startOf('day').toDate().toUTCString()),
+        new Date(moment(dateEnd).endOf('day').toDate().toUTCString()),
       ),
       complete: false,
     });
