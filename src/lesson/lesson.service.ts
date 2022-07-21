@@ -47,10 +47,7 @@ export class LessonService {
         },
         where: {
           userId: dto.userId,
-          date: Between(
-            moment(dto.dateStart).startOf('day').toDate(),
-            moment(dto.dateEnd).endOf('day').toDate(),
-          ),
+          date: Between(dto.dateStart, dto.dateEnd),
         },
         order: {
           date: 'ASC',
@@ -149,9 +146,9 @@ export class LessonService {
   }
 
   async copyLessonsWeek(userId: number, dateStart: Date) {
-    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+    const dateEnd = moment(dateStart).add(7, 'days').toDate();
     const dateStart2 = moment(dateStart).add(1, 'week').toDate();
-    const dateEnd2 = moment(dateStart2).add(6, 'days').toDate();
+    const dateEnd2 = moment(dateStart2).add(7, 'days').toDate();
 
     const prevWeekStudents = await this.studentRepository.find({
       where: {
@@ -217,16 +214,11 @@ export class LessonService {
   }
 
   async deleteLessonsWeek(userId: number, dateStart: Date) {
-    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+    const dateEnd = moment(dateStart).add(7, 'days').toDate();
 
     await this.lessonRepository.delete({
       userId,
-      date: Between(
-        // moment(dateStart).startOf('day').toDate(),
-        // moment(dateEnd).endOf('day').toDate(),
-        new Date(moment(dateStart).startOf('day').toDate().toUTCString()),
-        new Date(moment(dateEnd).endOf('day').toDate().toUTCString()),
-      ),
+      date: Between(dateStart, dateEnd),
       complete: false,
     });
 
