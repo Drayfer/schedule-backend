@@ -45,10 +45,10 @@ export class StudentEntity {
   @Column({ default: '' })
   note: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdDate: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedDate: Date;
 
   @Column({ nullable: true })
