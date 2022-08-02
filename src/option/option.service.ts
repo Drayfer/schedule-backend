@@ -156,8 +156,10 @@ export class OptionService {
         },
       });
       startWeek = startWeek.subtract(1, 'week');
+
       weeks.unshift({
         lessons: weekLessons[1],
+        lessonsInfo: weekLessons[0],
         date: startWeek.clone().format('DD.MM.YYYY').toString(),
       });
     }
@@ -175,9 +177,57 @@ export class OptionService {
     });
     weeks.push({
       lessons: currentWeekLessons[1],
+      lessonsInfo: currentWeekLessons[0],
       date: moment().startOf('isoWeek').format('DD.MM.YYYY').toString(),
     });
 
-    return weeks;
+    const students = await this.studentRepository.find({
+      where: {
+        userId,
+      },
+    });
+    const { rateWithBalance, rateWithoutBalance } =
+      await this.optionRepository.findOneBy({ userId });
+
+    // income every week
+    const weekIncome = weeks.map((week) => {
+      const withBalanceWeek =
+        week.lessonsInfo?.filter(
+          (lesson) =>
+            students.find((student) => student.id === lesson.studentId)
+              .showBalance,
+        ).length * rateWithBalance;
+      const withoutBalanceWeek =
+        week.lessonsInfo?.filter(
+          (lesson) =>
+            !students.find((student) => student.id === lesson.studentId)
+              .showBalance,
+        ).length * rateWithoutBalance;
+      return withBalanceWeek + withoutBalanceWeek;
+    });
+
+    //added students in every week
+    const weekStudents = weeks.map((week) =>
+      students
+        .filter((student) =>
+          moment(student.createdDate).isBetween(
+            moment(week.date, 'DD.MM.YYYY'),
+            moment(week.date, 'DD.MM.YYYY').add(1, 'weeks'),
+          ),
+        )
+        .map(
+          (student) =>
+            `${student.name} ${student.surname}::${moment(
+              student.createdDate,
+            )}`,
+        ),
+    );
+
+    return weeks.map((week, index) => ({
+      date: week.date,
+      lessons: week.lessons,
+      weekIncome: weekIncome[index],
+      weekStudents: weekStudents[index],
+    }));
   }
 }
