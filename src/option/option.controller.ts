@@ -35,8 +35,11 @@ export class OptionController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('statistic/chart/:userId')
-  getChart(@Param('userId') userId: string) {
-    return this.optionService.getChart(Number(userId));
+  @Get('statistic/chart/:userId/utc/:utcMinutes')
+  getChart(
+    @Param('userId') userId: string,
+    @Param('utcMinutes') utcMinutes: string,
+  ) {
+    return this.optionService.getChart(Number(userId), Number(utcMinutes));
   }
 }

@@ -139,8 +139,14 @@ export class OptionService {
     };
   }
 
-  async getChart(userId: number) {
-    let startWeek = moment().startOf('isoWeek');
+  async getChart(userId: number, utcMinutes: number) {
+    let startWeek = moment
+      .utc()
+      .startOf('isoWeek')
+      .subtract(utcMinutes, 'minutes')
+      .add(1, 'week');
+    // console.log(startWeek.subtract(1, 'weeks').subtract(utcMinutes, 'minutes'));
+    console.log(startWeek);
     const weeks = [];
     const { createdDate } = await this.userRepository.findOneBy({ id: userId });
 
@@ -160,26 +166,13 @@ export class OptionService {
       weeks.unshift({
         lessons: weekLessons[1],
         lessonsInfo: weekLessons[0],
-        date: startWeek.clone().format('DD.MM.YYYY').toString(),
+        date: startWeek
+          .clone()
+          .add(utcMinutes, 'minutes')
+          .format('DD.MM.YYYY')
+          .toString(),
       });
     }
-
-    // current Week Lessons
-    const currentWeekLessons = await this.lessonRepository.findAndCount({
-      where: {
-        userId,
-        date: Between(
-          moment().startOf('isoWeek').toDate(),
-          moment().endOf('isoWeek').toDate(),
-        ),
-        complete: true,
-      },
-    });
-    weeks.push({
-      lessons: currentWeekLessons[1],
-      lessonsInfo: currentWeekLessons[0],
-      date: moment().startOf('isoWeek').format('DD.MM.YYYY').toString(),
-    });
 
     const students = await this.studentRepository.find({
       where: {
