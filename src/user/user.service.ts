@@ -58,4 +58,21 @@ export class UserService {
     await this.userRepository.update(user.id, { password: hashPassword });
     return;
   }
+
+  async updateProfile(dto: CreateUserDto, userId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    const hashPassword = await bcrypt.hash(dto.password, 3);
+    const a = await this.userRepository.update(user.id, {
+      password: hashPassword,
+      name: dto.name,
+      email: dto.email,
+    });
+
+    const updatedUser = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    return { name: updatedUser.name, email: updatedUser.email };
+  }
 }

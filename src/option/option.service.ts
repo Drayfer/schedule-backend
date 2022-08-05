@@ -145,8 +145,7 @@ export class OptionService {
       .startOf('isoWeek')
       .subtract(utcMinutes, 'minutes')
       .add(1, 'week');
-    // console.log(startWeek.subtract(1, 'weeks').subtract(utcMinutes, 'minutes'));
-    console.log(startWeek);
+
     const weeks = [];
     const { createdDate } = await this.userRepository.findOneBy({ id: userId });
 
