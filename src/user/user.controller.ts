@@ -43,4 +43,9 @@ export class UserController {
   setNewPassword(@Body() dto: UpdatePasswordDto) {
     return this.userService.setNewPassword(dto);
   }
+
+  @Put('/updateProfile/:userId')
+  updateProfile(@Body() dto: CreateUserDto, @Param('userId') userId: string) {
+    return this.userService.updateProfile(dto, Number(userId));
+  }
 }

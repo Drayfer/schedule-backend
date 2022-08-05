@@ -55,7 +55,6 @@ export class StudentService {
       },
     });
     if (!lessons.some((lesson) => lesson.complete)) {
-      console.log(lessons);
       this.studentRepository.delete({ id });
       return;
     }
