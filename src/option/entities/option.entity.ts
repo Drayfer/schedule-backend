@@ -30,6 +30,19 @@ export class OptionEntity {
   @Column({ default: 'USD' })
   currency: string;
 
+  @Column({
+    type: 'jsonb',
+    array: false,
+    default: () => "'[]'",
+    nullable: false,
+  })
+  notificationsArr: Array<{
+    id: number;
+    text: string;
+    date: Date;
+    complete: boolean;
+  }>;
+
   @Column()
   userId: number;
 
