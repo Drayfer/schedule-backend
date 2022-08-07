@@ -1,3 +1,5 @@
+import { IsDateString } from 'class-validator';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UserEntity } from './../user/entities/user.entity';
 import { LessonEntity } from './../lesson/entities/lesson.entity';
 import { StudentEntity } from './../student/entities/student.entity';
@@ -221,5 +223,89 @@ export class OptionService {
       weekIncome: weekIncome[index],
       weekStudents: weekStudents[index],
     }));
+  }
+
+  async createNotification(dto: CreateNotificationDto, userId: number) {
+    const { notificationsArr } = await this.optionRepository.findOne({
+      where: {
+        userId,
+      },
+    });
+    await this.optionRepository.update(
+      { userId },
+      {
+        notificationsArr: [...notificationsArr, dto].sort((a, b) =>
+          moment(b.date).isBefore(a.date) ? 1 : -1,
+        ),
+      },
+    );
+    const { notificationsArr: updatedNotifications } =
+      await this.optionRepository.findOne({
+        where: {
+          userId,
+        },
+      });
+    return updatedNotifications;
+  }
+
+  async removeNotification(noteId: number, userId: number) {
+    const { notificationsArr } = await this.optionRepository.findOne({
+      where: {
+        userId,
+      },
+    });
+    await this.optionRepository.update(
+      { userId },
+      {
+        notificationsArr: notificationsArr.filter((note) => note.id !== noteId),
+      },
+    );
+    return;
+  }
+
+  async editNotification(dto: CreateNotificationDto, userId: number) {
+    const { notificationsArr } = await this.optionRepository.findOne({
+      where: {
+        userId,
+      },
+    });
+    await this.optionRepository.update(
+      { userId },
+      {
+        notificationsArr: notificationsArr
+          .map((note) => (note.id !== dto.id ? note : dto))
+          .sort((a, b) => (moment(b.date).isBefore(a.date) ? 1 : -1)),
+      },
+    );
+    const { notificationsArr: updatedNotifications } =
+      await this.optionRepository.findOne({
+        where: {
+          userId,
+        },
+      });
+    return updatedNotifications;
+  }
+
+  async allCompleteNotifications(userId: number) {
+    const { notificationsArr } = await this.optionRepository.findOne({
+      where: {
+        userId,
+      },
+    });
+    await this.optionRepository.update(
+      { userId },
+      {
+        notificationsArr: notificationsArr.filter(
+          (note) => note.complete === false,
+        ),
+      },
+    );
+    const { notificationsArr: updatedArray } =
+      await this.optionRepository.findOne({
+        where: {
+          userId,
+        },
+      });
+    return updatedArray;
   }
 }

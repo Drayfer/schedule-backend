@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 
 @Controller('option')
 export class OptionController {
@@ -41,5 +42,41 @@ export class OptionController {
     @Param('utcMinutes') utcMinutes: string,
   ) {
     return this.optionService.getChart(Number(userId), Number(utcMinutes));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('notification/:userId')
+  createNotification(
+    @Body() dto: CreateNotificationDto,
+    @Param('userId') userId: string,
+  ) {
+    return this.optionService.createNotification(dto, Number(userId));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('notification/:noteId/:userId')
+  removeNotification(
+    @Param('noteId') noteId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.optionService.removeNotification(
+      Number(noteId),
+      Number(userId),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('notification/:userId')
+  editNotification(
+    @Body() dto: CreateNotificationDto,
+    @Param('userId') userId: string,
+  ) {
+    return this.optionService.editNotification(dto, Number(userId));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('all/:userId')
+  allCompleteNotifications(@Param('userId') userId: string) {
+    return this.optionService.allCompleteNotifications(Number(userId));
   }
 }
