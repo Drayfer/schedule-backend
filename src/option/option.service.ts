@@ -308,4 +308,9 @@ export class OptionService {
       });
     return updatedArray;
   }
+
+  async setLocale(userId: number, localeLang: string) {
+    await this.optionRepository.update({ userId }, { locale: localeLang });
+    return localeLang;
+  }
 }

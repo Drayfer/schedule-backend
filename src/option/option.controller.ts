@@ -79,4 +79,10 @@ export class OptionController {
   allCompleteNotifications(@Param('userId') userId: string) {
     return this.optionService.allCompleteNotifications(Number(userId));
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('locale/:userId/:locale')
+  setLocale(@Param('userId') userId: string, @Param('locale') locale: string) {
+    return this.optionService.setLocale(Number(userId), locale);
+  }
 }
