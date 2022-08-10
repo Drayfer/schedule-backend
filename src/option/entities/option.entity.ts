@@ -30,6 +30,9 @@ export class OptionEntity {
   @Column({ default: 'USD' })
   currency: string;
 
+  @Column({ default: 'en' })
+  locale: string;
+
   @Column({
     type: 'jsonb',
     array: false,
