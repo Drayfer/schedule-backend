@@ -80,21 +80,16 @@ export class LessonController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('calendar/:userId/:utc')
+  @Post('calendar/:userId')
   getCalendarDay(
     @Param('userId') userId: string,
-    @Param('utc') utc: string,
     @Body() dto: { date: moment.Moment },
   ) {
-    return this.lessonService.getCalendarDay(
-      Number(userId),
-      dto.date,
-      Number(utc),
-    );
+    return this.lessonService.getCalendarDay(Number(userId), dto.date);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('calendar/:userId')
+  @Post('calendar/copy/:userId')
   copyCurrentDay(
     @Param('userId') userId: string,
     @Body() dto: { date: moment.Moment; currentDate: moment.Moment },
