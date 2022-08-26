@@ -248,15 +248,14 @@ export class LessonService {
     });
   }
 
-  async getCalendarDay(userId: number, date: moment.Moment, utc?: number) {
+  async getCalendarDay(userId: number, date: moment.Moment) {
     const dateStart = moment(date).utc();
     const dateEnd = dateStart.clone().add(1, 'day');
-    const a = await this.findAll({
+    return this.findAll({
       userId,
       dateStart: dateStart.toDate(),
       dateEnd: dateEnd.toDate(),
     });
-    return a;
   }
 
   async copyCurrentDay(
@@ -265,7 +264,6 @@ export class LessonService {
     currentDate: moment.Moment,
   ) {
     let lessons = await this.getCalendarDay(userId, date);
-
     lessons = await lessons.reduce(async (acc: any, lesson) => {
       const student = await this.studentRepository.findOneBy({
         id: lesson.studentId,
@@ -294,11 +292,6 @@ export class LessonService {
     });
 
     await this.lessonRepository.save(updateLessons);
-
-    return this.findAll({
-      userId,
-      dateStart: moment(currentDate).startOf('isoWeek').toDate(),
-      dateEnd: moment(currentDate).endOf('isoWeek').toDate(),
-    });
+    return this.getCalendarDay(userId, currentDate);
   }
 }
