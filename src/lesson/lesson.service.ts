@@ -230,12 +230,10 @@ export class LessonService {
   }
 
   async deleteLessonsDay(userId: number, dateStart: Date, date: Date) {
+    const a = moment(date);
     await this.lessonRepository.delete({
       userId,
-      date: Between(
-        moment(date).startOf('day').toDate(),
-        moment(date).endOf('day').toDate(),
-      ),
+      date: Between(a.toDate(), moment(a).clone().add(1, 'day').toDate()),
       complete: false,
     });
 
