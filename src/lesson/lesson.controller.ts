@@ -8,7 +8,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Put,
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
@@ -77,6 +76,33 @@ export class LessonController {
       dto.userId,
       dto.dateStart,
       dto.date,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('calendar/:userId/:utc')
+  getCalendarDay(
+    @Param('userId') userId: string,
+    @Param('utc') utc: string,
+    @Body() dto: { date: moment.Moment },
+  ) {
+    return this.lessonService.getCalendarDay(
+      Number(userId),
+      dto.date,
+      Number(utc),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('calendar/:userId')
+  copyCurrentDay(
+    @Param('userId') userId: string,
+    @Body() dto: { date: moment.Moment; currentDate: moment.Moment },
+  ) {
+    return this.lessonService.copyCurrentDay(
+      Number(userId),
+      dto.date,
+      dto.currentDate,
     );
   }
 }

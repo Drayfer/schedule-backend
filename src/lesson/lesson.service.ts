@@ -247,4 +247,53 @@ export class LessonService {
       dateEnd: dateEnd,
     });
   }
+
+  async getCalendarDay(userId: number, date: moment.Moment, utc?: number) {
+    const dateStart = moment(date).startOf('day').toDate();
+    const dateEnd = moment(date).endOf('day').toDate();
+    return this.findAll({ userId, dateStart, dateEnd });
+  }
+
+  async copyCurrentDay(
+    userId: number,
+    date: moment.Moment,
+    currentDate: moment.Moment,
+  ) {
+    let lessons = await this.getCalendarDay(userId, date);
+
+    lessons = await lessons.reduce(async (acc: any, lesson) => {
+      const student = await this.studentRepository.findOneBy({
+        id: lesson.studentId,
+      });
+      const a = !student.break && !student.delete;
+      // If our async method didn't return true, return the current list
+      // *without* this new entry
+      if (!a) {
+        return acc;
+      }
+      // Otherwise add this value to the list
+      return (await acc).concat(lesson);
+    }, []);
+
+    const updateLessons = lessons.map((lesson) => {
+      const day = moment(currentDate).date();
+      const month = moment(currentDate).month();
+      const year = moment(currentDate).year();
+      const newDate = moment(lesson.date).date(day).month(month).year(year);
+      return {
+        userId: lesson.userId,
+        desciplineId: lesson.disciplineId,
+        studentId: lesson.studentId,
+        date: newDate.toDate(),
+      };
+    });
+
+    await this.lessonRepository.save(updateLessons);
+
+    return this.findAll({
+      userId,
+      dateStart: moment(currentDate).startOf('isoWeek').toDate(),
+      dateEnd: moment(currentDate).endOf('isoWeek').toDate(),
+    });
+  }
 }
