@@ -237,7 +237,7 @@ export class LessonService {
       complete: false,
     });
 
-    const dateEnd = moment(dateStart).add(6, 'days').toDate();
+    const dateEnd = moment(dateStart).add(7, 'days').toDate();
 
     return this.findAll({
       userId,
@@ -260,6 +260,7 @@ export class LessonService {
     userId: number,
     date: moment.Moment,
     currentDate: moment.Moment,
+    weekStart: moment.Moment,
   ) {
     let lessons = await this.getCalendarDay(userId, date);
     lessons = await lessons.reduce(async (acc: any, lesson) => {
@@ -289,6 +290,10 @@ export class LessonService {
       };
     });
     await this.lessonRepository.save(updateLessons);
-    return this.getCalendarDay(userId, moment(currentDate));
+    return this.findAll({
+      userId,
+      dateStart: moment(weekStart).toDate(),
+      dateEnd: moment(weekStart).add(1, 'week').toDate(),
+    });
   }
 }

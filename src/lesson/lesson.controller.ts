@@ -92,12 +92,18 @@ export class LessonController {
   @Post('calendar/copy/:userId')
   copyCurrentDay(
     @Param('userId') userId: string,
-    @Body() dto: { date: moment.Moment; currentDate: moment.Moment },
+    @Body()
+    dto: {
+      date: moment.Moment;
+      currentDate: moment.Moment;
+      weekStart: moment.Moment;
+    },
   ) {
     return this.lessonService.copyCurrentDay(
       Number(userId),
       dto.date,
       dto.currentDate,
+      dto.weekStart,
     );
   }
 }
