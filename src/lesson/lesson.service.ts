@@ -249,9 +249,14 @@ export class LessonService {
   }
 
   async getCalendarDay(userId: number, date: moment.Moment, utc?: number) {
-    const dateStart = moment(date).startOf('day').toDate();
-    const dateEnd = moment(date).endOf('day').toDate();
-    return this.findAll({ userId, dateStart, dateEnd });
+    const dateStart = moment(date).utc();
+    const dateEnd = dateStart.clone().add(1, 'day');
+    const a = await this.findAll({
+      userId,
+      dateStart: dateStart.toDate(),
+      dateEnd: dateEnd.toDate(),
+    });
+    return a;
   }
 
   async copyCurrentDay(
