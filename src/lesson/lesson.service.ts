@@ -279,15 +279,15 @@ export class LessonService {
     }, []);
 
     const updateLessons = lessons.map((lesson) => {
-      const day = moment(currentDate).utc().date();
-      const month = moment(currentDate).utc().month();
-      const year = moment(currentDate).utc().year();
+      const day = moment(currentDate).date();
+      const month = moment(currentDate).month();
+      const year = moment(currentDate).year();
       const newDate = moment(lesson.date).date(day).month(month).year(year);
       return {
         userId: lesson.userId,
         desciplineId: lesson.disciplineId,
         studentId: lesson.studentId,
-        date: newDate.toDate(),
+        date: moment(newDate).utc().toDate(),
       };
     });
     await this.lessonRepository.save(updateLessons);
