@@ -278,19 +278,19 @@ export class LessonService {
       return (await acc).concat(lesson);
     }, []);
 
+    const addDays = moment
+      .duration(moment(currentDate).diff(moment(date)), 'milliseconds')
+      .days();
+
     const updateLessons = lessons.map((lesson) => {
-      const day = moment(currentDate).date();
-      const month = moment(currentDate).month();
-      const year = moment(currentDate).year();
-      const newDate = moment(lesson.date).date(day).month(month).year(year);
       return {
         userId: lesson.userId,
         desciplineId: lesson.disciplineId,
         studentId: lesson.studentId,
-        date: moment(newDate).utc().toDate(),
+        date: moment(lesson.date).add(addDays, 'days').toDate(),
       };
     });
     await this.lessonRepository.save(updateLessons);
-    return this.getCalendarDay(userId, currentDate);
+    return this.getCalendarDay(userId, moment(currentDate));
   }
 }
