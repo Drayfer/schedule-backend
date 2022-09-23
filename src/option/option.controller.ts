@@ -85,4 +85,15 @@ export class OptionController {
   setLocale(@Param('userId') userId: string, @Param('locale') locale: string) {
     return this.optionService.setLocale(Number(userId), locale);
   }
+
+  @Post('webview/token/:userId')
+  updateWebviewToken(
+    @Body() dto: { webviewToken: string },
+    @Param('userId') userId: string,
+  ) {
+    return this.optionService.updateWebviewToken(
+      dto.webviewToken,
+      Number(userId),
+    );
+  }
 }

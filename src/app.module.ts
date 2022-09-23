@@ -12,6 +12,7 @@ import { StudentModule } from './student/student.module';
 import { LessonModule } from './lesson/lesson.module';
 import { DisciplineModule } from './discipline/discipline.module';
 import { OptionModule } from './option/option.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { OptionModule } from './option/option.module';
     LessonModule,
     DisciplineModule,
     OptionModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {}

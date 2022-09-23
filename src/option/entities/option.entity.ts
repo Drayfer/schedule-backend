@@ -49,6 +49,9 @@ export class OptionEntity {
   @Column()
   userId: number;
 
+  @Column({ default: '' })
+  webviewToken: string;
+
   @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
