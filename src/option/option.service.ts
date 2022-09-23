@@ -1,14 +1,15 @@
-import { IsDateString } from 'class-validator';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UserEntity } from './../user/entities/user.entity';
 import { LessonEntity } from './../lesson/entities/lesson.entity';
 import { StudentEntity } from './../student/entities/student.entity';
-import { Repository, Between } from 'typeorm';
+import { Repository, Between, Not } from 'typeorm';
 import { OptionEntity } from './entities/option.entity';
 import { Injectable } from '@nestjs/common';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
+import { Cron } from '@nestjs/schedule';
+import axios from 'axios';
 
 @Injectable()
 export class OptionService {
@@ -312,5 +313,89 @@ export class OptionService {
   async setLocale(userId: number, localeLang: string) {
     await this.optionRepository.update({ userId }, { locale: localeLang });
     return localeLang;
+  }
+
+  async updateWebviewToken(webviewToken: string, userId: number) {
+    await this.optionRepository.update({ userId }, { webviewToken });
+  }
+
+  @Cron('* * * * * *')
+  async handleCron() {
+    const optionInfo = await this.optionRepository.find({
+      where: {
+        webviewToken: Not(''),
+      },
+    });
+
+    if (!optionInfo.length) return;
+
+    const timeMoment = moment().utc();
+    const notifMaxMinute = Math.max(
+      ...optionInfo.map((item) => item.notifyMinutes),
+    );
+    const notifMinMinute = Math.min(
+      ...optionInfo.map((item) => item.notifyMinutes),
+    );
+
+    const lessons = await this.lessonRepository.find({
+      where: {
+        date: Between(
+          timeMoment.clone().add(notifMinMinute, 'minutes').toDate(),
+          timeMoment
+            .clone()
+            .add(notifMaxMinute + 1, 'minutes')
+            .toDate(),
+        ),
+        complete: false,
+      },
+    });
+
+    await lessons.forEach(async (lesson) => {
+      await optionInfo.forEach(async (item) => {
+        if (
+          moment(lesson.date)
+            .utc()
+            .isBetween(
+              timeMoment.clone().add(item.notifyMinutes - 1, 'minutes'),
+              timeMoment.clone().add(item.notifyMinutes + 1, 'minutes'),
+            )
+        ) {
+          const { name, surname } = await this.studentRepository.findOne({
+            where: {
+              id: lesson.studentId,
+            },
+          });
+          if (lesson.userId === item.userId) {
+            this.sentNotification(
+              item.webviewToken,
+              `Lesson - ${name} ${surname}`,
+              `After ${item.notifyMinutes} minutes`,
+            );
+          }
+        }
+      });
+    });
+    return;
+  }
+
+  async sentNotification(to: string, title: string, body: string) {
+    try {
+      await axios({
+        url: 'https://exp.host/--/api/v2/push/send',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        data: {
+          to,
+          title,
+          body,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
