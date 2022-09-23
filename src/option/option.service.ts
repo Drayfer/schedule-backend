@@ -319,7 +319,7 @@ export class OptionService {
     await this.optionRepository.update({ userId }, { webviewToken });
   }
 
-  @Cron('* * * * * *')
+  @Cron('10 * * * * *')
   async handleCron() {
     const optionInfo = await this.optionRepository.find({
       where: {
