@@ -321,6 +321,7 @@ export class OptionService {
 
   @Cron('10 * * * * *')
   async handleCron() {
+    console.log(`Cron execute ${moment().toDate()}`);
     const optionInfo = await this.optionRepository.find({
       where: {
         webviewToken: Not(''),
