@@ -96,4 +96,10 @@ export class OptionController {
       Number(userId),
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/billinginfo/:userId')
+  getBillingInfo(@Param('userId') userId: string) {
+    return this.optionService.getBillingInfo(Number(userId));
+  }
 }

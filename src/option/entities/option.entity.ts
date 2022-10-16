@@ -52,6 +52,9 @@ export class OptionEntity {
   @Column({ default: '' })
   webviewToken: string;
 
+  @Column({ nullable: true, type: 'timestamptz' })
+  paid: Date;
+
   @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
