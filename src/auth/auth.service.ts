@@ -33,7 +33,9 @@ export class AuthService {
       token,
       // activate: user.activate,
       ...user,
-      expToken: moment().add(Number(process.env.TOKEN_EXP), 'days').unix(),
+      expToken: moment()
+        .add(Number(process.env.TOKEN_EXP || 60), 'days')
+        .unix(),
     };
   }
 
@@ -71,12 +73,12 @@ export class AuthService {
     const user = await this.userService.getUserByEmail(dto.email);
     if (!user)
       throw new UnauthorizedException({
-        message: 'Invalid email или password',
+        message: 'Invalid email or password',
       });
     const isPasswordsMatch = await bcrypt.compare(dto.password, user.password);
     if (user && isPasswordsMatch) return user;
     throw new UnauthorizedException({
-      message: 'Invalid email или password',
+      message: 'Invalid email or password',
     });
   }
 
