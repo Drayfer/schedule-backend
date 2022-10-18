@@ -64,7 +64,7 @@ export class UserService {
       where: { id: userId },
     });
     const hashPassword = await bcrypt.hash(dto.password, 3);
-    const a = await this.userRepository.update(user.id, {
+    await this.userRepository.update(user.id, {
       password: hashPassword,
       name: dto.name,
       email: dto.email,
@@ -74,5 +74,15 @@ export class UserService {
       where: { id: userId },
     });
     return { name: updatedUser.name, email: updatedUser.email };
+  }
+
+  async updateGuide(userId: number) {
+    await this.userRepository.update(
+      { id: userId },
+      {
+        guide: true,
+      },
+    );
+    return;
   }
 }

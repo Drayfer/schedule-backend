@@ -33,9 +33,6 @@ export class AuthService {
       token,
       // activate: user.activate,
       ...user,
-      expToken: moment()
-        .add(Number(process.env.TOKEN_EXP || 60), 'days')
-        .unix(),
     };
   }
 

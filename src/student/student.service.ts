@@ -23,7 +23,11 @@ export class StudentService {
   ) {}
 
   async create(dto: CreateStudentDto) {
-    const student = await this.studentRepository.save({ ...dto, color: rc() });
+    const { id } = await this.studentRepository.save({ ...dto, color: rc() });
+    const student = await this.studentRepository.findOne({
+      where: { id, delete: false },
+      relations: { disciplines: true },
+    });
     return student;
   }
 
