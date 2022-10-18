@@ -48,4 +48,9 @@ export class UserController {
   updateProfile(@Body() dto: CreateUserDto, @Param('userId') userId: string) {
     return this.userService.updateProfile(dto, Number(userId));
   }
+
+  @Get('/guide/:userId')
+  updateGuide(@Param('userId') userId: string) {
+    return this.userService.updateGuide(Number(userId));
+  }
 }

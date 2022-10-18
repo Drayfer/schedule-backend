@@ -33,6 +33,9 @@ export class UserEntity {
   @Column({ default: 0 })
   lessonsHistory: number;
 
+  @Column({ default: false })
+  guide: boolean;
+
   @CreateDateColumn()
   createdDate: Date;
 
