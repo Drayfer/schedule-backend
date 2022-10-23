@@ -277,9 +277,7 @@ export class LessonService {
       return (await acc).concat(lesson);
     }, []);
 
-    const addDays = moment
-      .duration(moment(currentDate).diff(moment(date)), 'milliseconds')
-      .days();
+    const addDays = moment(currentDate).diff(moment(date), 'days');
 
     const updateLessons = lessons.map((lesson) => {
       return {
