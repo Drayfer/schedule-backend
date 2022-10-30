@@ -2,14 +2,25 @@ import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UserEntity } from './../user/entities/user.entity';
 import { LessonEntity } from './../lesson/entities/lesson.entity';
 import { StudentEntity } from './../student/entities/student.entity';
-import { Repository, Between, Not } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { OptionEntity } from './entities/option.entity';
 import { Injectable } from '@nestjs/common';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
-import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
+import * as sha1 from 'sha-1';
+
+interface IFondyMerchant {
+  amount: string;
+  currency: string;
+  merchant_data: string;
+  merchant_id: string;
+  order_desc: string;
+  order_id: string;
+  response_url: string;
+  signature?: string;
+}
 
 @Injectable()
 export class OptionService {
@@ -337,5 +348,37 @@ export class OptionService {
       demoDays,
       paidDays,
     };
+  }
+
+  async createMerchant(userId: number, amount: number) {
+    const merchant_data = JSON.stringify({
+      duration: amount === 200 ? 'month' : amount === 1400 ? 'year' : 'month',
+      userId,
+    });
+
+    const merchantBody: IFondyMerchant = {
+      amount: `${amount}`,
+      currency: 'USD',
+      merchant_data,
+      merchant_id: process.env.MERCHANT_ID,
+      order_desc: 'Subscription T-App',
+      order_id: `${userId}_${Date.now()}`,
+      response_url: 'https://t-app.icu',
+    };
+    merchantBody.signature = sha1(
+      process.env.MERCHANT_PASS + '|' + Object.values(merchantBody).join('|'),
+    );
+
+    const { data } = await axios.post(
+      'https://pay.fondy.eu/api/checkout/url/',
+      {
+        request: merchantBody,
+      },
+    );
+    return data;
+  }
+
+  async confirmMerchant(dto: any) {
+    console.log(dto);
   }
 }

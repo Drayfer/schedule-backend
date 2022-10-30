@@ -102,4 +102,17 @@ export class OptionController {
   getBillingInfo(@Param('userId') userId: string) {
     return this.optionService.getBillingInfo(Number(userId));
   }
+
+  @Post('/createmerchant/:userId')
+  createMerchant(
+    @Body() dto: { amount: number },
+    @Param('userId') userId: string,
+  ) {
+    return this.optionService.createMerchant(Number(userId), dto.amount);
+  }
+
+  @Post('/confirmmerchant')
+  confirmMerchant(@Body() dto: any) {
+    return this.optionService.confirmMerchant(dto);
+  }
 }
