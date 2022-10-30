@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Redirect,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
@@ -112,7 +113,11 @@ export class OptionController {
   }
 
   @Post('/confirmmerchant')
+  @Redirect()
   confirmMerchant(@Body() dto: any) {
-    return this.optionService.confirmMerchant(dto);
+    this.optionService.confirmMerchant(dto);
+    if (dto.response_status === 'success') {
+      return { url: 'https://t-app.icu/dashboard' };
+    }
   }
 }
