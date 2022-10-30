@@ -361,9 +361,11 @@ export class OptionService {
       currency: 'USD',
       merchant_data,
       merchant_id: process.env.MERCHANT_ID,
-      order_desc: 'Subscription T-App',
+      order_desc: `Subscription T-App - 1 ${
+        JSON.parse(merchant_data).duration
+      }`,
       order_id: `${userId}_${Date.now()}`,
-      response_url: 'https://t-app.icu',
+      response_url: 'https://t-app-api.onrender.com/api/option/confirmmerchant',
     };
     merchantBody.signature = sha1(
       process.env.MERCHANT_PASS + '|' + Object.values(merchantBody).join('|'),
