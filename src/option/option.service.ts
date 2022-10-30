@@ -365,8 +365,8 @@ export class OptionService {
         JSON.parse(merchant_data).duration
       }`,
       order_id: `${userId}_${Date.now()}`,
-      // response_url: 'https://t-app-api.onrender.com/api/option/confirmmerchant',
-      response_url: 'http://ptsv2.com/t/4l2iq-1667125397/post',
+      response_url: 'https://t-app-api.onrender.com/api/option/confirmmerchant',
+      //response_url: 'http://ptsv2.com/t/4l2iq-1667125397/post',
     };
     merchantBody.signature = sha1(
       process.env.MERCHANT_PASS + '|' + Object.values(merchantBody).join('|'),
