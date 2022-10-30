@@ -365,7 +365,8 @@ export class OptionService {
         JSON.parse(merchant_data).duration
       }`,
       order_id: `${userId}_${Date.now()}`,
-      response_url: 'https://t-app-api.onrender.com/api/option/confirmmerchant',
+      // response_url: 'https://t-app-api.onrender.com/api/option/confirmmerchant',
+      response_url: 'http://ptsv2.com/t/4l2iq-1667125397/post',
     };
     merchantBody.signature = sha1(
       process.env.MERCHANT_PASS + '|' + Object.values(merchantBody).join('|'),
@@ -381,6 +382,20 @@ export class OptionService {
   }
 
   async confirmMerchant(dto: any) {
-    console.log(dto);
+    const { userId, duration } = JSON.parse(dto.merchant_data);
+    const { paid } = await this.optionRepository.findOneBy({ userId });
+    let newPaid = null;
+    if (!paid || moment(paid).isBefore(moment())) {
+      newPaid = moment().add(1, duration).toDate();
+    } else {
+      newPaid = moment(paid).add(1, duration).toDate();
+    }
+
+    await this.optionRepository.update(
+      { userId },
+      {
+        paid: newPaid,
+      },
+    );
   }
 }
