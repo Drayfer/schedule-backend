@@ -104,6 +104,7 @@ export class OptionController {
     return this.optionService.getBillingInfo(Number(userId));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/createmerchant/:userId')
   createMerchant(
     @Body() dto: { amount: number },
@@ -114,10 +115,10 @@ export class OptionController {
 
   @Post('/confirmmerchant')
   @Redirect()
-  confirmMerchant(@Body() dto: any) {
-    this.optionService.confirmMerchant(dto);
+  async confirmMerchant(@Body() dto: any) {
+    await this.optionService.confirmMerchant(dto);
     if (dto.response_status === 'success') {
-      return { url: 'https://t-app.icu/dashboard' };
+      return { url: `${process.env.MERCHANT_PASS}/dashboard?success` };
     }
   }
 }
