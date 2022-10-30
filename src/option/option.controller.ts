@@ -118,7 +118,7 @@ export class OptionController {
   async confirmMerchant(@Body() dto: any) {
     await this.optionService.confirmMerchant(dto);
     if (dto.response_status === 'success') {
-      return { url: `${process.env.MERCHANT_PASS}/dashboard?success` };
+      return { url: `${process.env.CLIENT_URL}/dashboard?success` };
     }
   }
 }
