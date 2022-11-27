@@ -8,6 +8,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Repository } from 'typeorm';
 import * as rc from 'randomcolor';
+import * as moment from 'moment';
 
 @Injectable()
 export class StudentService {
@@ -47,6 +48,7 @@ export class StudentService {
         disciplines: true,
       },
     });
+
     return students;
   }
 
@@ -74,19 +76,32 @@ export class StudentService {
   }
 
   async update(id: number, dto: UpdateStudentDto) {
-    const { id: studentId, balance } = await this.studentRepository.findOneBy({
-      id,
+    const { balance, balanceHistory } = await this.studentRepository.findOne({
+      where: { id },
+      select: ['balanceHistory', 'balance'],
     });
     delete dto.disciplines;
     delete dto.updateDisciplines;
+    const updatedBalanceHistory =
+      dto.balance !== 0 && dto.updateBalanceHistory
+        ? [
+            {
+              date: new Date(),
+              count: Number(dto.balance),
+            },
+            ...balanceHistory,
+          ]
+        : balanceHistory;
+    delete dto.updateBalanceHistory;
     await this.studentRepository.update(
       {
-        id: studentId,
+        id,
       },
       {
         ...dto,
         balance: dto.balance ? Number(dto.balance) + balance : balance,
         updatedDate: new Date(),
+        balanceHistory: updatedBalanceHistory,
       },
     );
     return this.studentRepository.findOne({
@@ -95,5 +110,34 @@ export class StudentService {
         disciplines: true,
       },
     });
+  }
+
+  async getBalanceHistory(id: number) {
+    const lessons = await this.lessonRepository.find({
+      where: {
+        studentId: id,
+        complete: true,
+      },
+      order: {
+        date: 'DESC',
+      },
+    });
+    const { balanceHistory } = await this.studentRepository.findOne({
+      where: { id },
+      select: ['balanceHistory'],
+    });
+    const redactBalanceHistory = balanceHistory.map((item) => ({
+      date: item.date,
+      action: item.count > 0 ? 'add' : 'subtract',
+      count: item.count,
+    }));
+    const history = lessons.map((item) => ({
+      date: item.date,
+      action: 'lesson',
+      count: -1,
+    }));
+    return [...history, ...redactBalanceHistory].sort((a, b) =>
+      moment(a.date).isBefore(b.date) ? 1 : -1,
+    );
   }
 }

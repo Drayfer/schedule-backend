@@ -18,4 +18,8 @@ export class UpdateStudentDto extends PartialType(CreateStudentDto) {
 
   @IsOptional()
   disciplines: DisciplineEntity[];
+
+  @IsBoolean()
+  @IsOptional()
+  updateBalanceHistory: boolean;
 }
