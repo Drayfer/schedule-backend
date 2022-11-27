@@ -66,6 +66,18 @@ export class StudentEntity {
   @Column({ default: false })
   delete: boolean;
 
+  @Column({
+    type: 'jsonb',
+    array: false,
+    default: () => "'[]'",
+    nullable: false,
+    select: false,
+  })
+  balanceHistory: Array<{
+    date: Date;
+    count: number;
+  }>;
+
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;

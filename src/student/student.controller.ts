@@ -40,4 +40,10 @@ export class StudentController {
   update(@Param('id') id: string, @Body() dto: UpdateStudentDto) {
     return this.studentService.update(Number(id), dto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('balanceHistory/:id')
+  getBalanceHistory(@Param('id') id: string) {
+    return this.studentService.getBalanceHistory(Number(id));
+  }
 }
