@@ -14,6 +14,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import * as moment from 'moment';
+import { SetStateLessonDto } from './dto/setState-lesson.dto';
 
 @Injectable()
 export class LessonService {
@@ -293,5 +294,50 @@ export class LessonService {
       dateStart: moment(weekStart).toDate(),
       dateEnd: moment(weekStart).add(1, 'week').toDate(),
     });
+  }
+
+  async setState(id: number, dto: SetStateLessonDto) {
+    const { studentId } = await this.lessonRepository.findOneBy({ id });
+    await this.lessonRepository.update(
+      {
+        id,
+      },
+      {
+        complete: dto.complete,
+      },
+    );
+
+    const { balance } = await this.studentRepository.findOneBy({
+      id: studentId,
+    });
+    await this.studentRepository.update(
+      {
+        id: studentId,
+      },
+      {
+        balance: balance + dto.balanceCount,
+      },
+    );
+
+    const updatedStudent = await this.studentRepository.findOne({
+      where: { id: studentId },
+      relations: {
+        disciplines: true,
+      },
+    });
+
+    const updatedLesson = await this.lessonRepository.findOneBy({ id });
+
+    return {
+      updatedStudent,
+      updatedLesson: {
+        ...updatedLesson,
+        fullName: `${updatedStudent.name}${
+          updatedStudent.surname
+            ? ' ' + updatedStudent.surname.slice(0, 1) + '.'
+            : ''
+        }`,
+      },
+    };
   }
 }

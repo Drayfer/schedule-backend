@@ -14,6 +14,7 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import moment from 'moment';
+import { SetStateLessonDto } from './dto/setState-lesson.dto';
 
 @Controller('lesson')
 export class LessonController {
@@ -105,5 +106,11 @@ export class LessonController {
       dto.currentDate,
       dto.weekStart,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('setState/:id')
+  setState(@Param('id') id: string, @Body() dto: SetStateLessonDto) {
+    return this.lessonService.setState(Number(id), dto);
   }
 }
