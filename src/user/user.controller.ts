@@ -53,8 +53,4 @@ export class UserController {
   updateGuide(@Param('userId') userId: string) {
     return this.userService.updateGuide(Number(userId));
   }
-  @Get('/test')
-  test() {
-    return { data: 'ok' };
-  }
 }
