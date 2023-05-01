@@ -9,6 +9,7 @@ import {
   Delete,
   UseGuards,
   Redirect,
+  HttpCode,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
@@ -124,11 +125,11 @@ export class OptionController {
   }
 
   @Post('/donatello')
-  @Redirect()
+  @HttpCode(200)
   async confirmDonatello(@Body() dto: donatelloDto) {
-    await this.optionService.confirmDonatello(dto);
-    // if (dto.response_status === 'success') {
-    //   return { url: `${process.env.CLIENT_URL}/dashboard?success` };
-    // }
+    const data = await this.optionService.confirmDonatello(dto);
+    if (data === 'success') {
+      return 'ok';
+    }
   }
 }

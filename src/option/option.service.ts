@@ -401,21 +401,28 @@ export class OptionService {
   }
 
   async confirmDonatello(dto: donatelloDto) {
-    console.log(dto);
-    // const { userId, duration } = JSON.parse(dto.merchant_data);
-    // const { paid } = await this.optionRepository.findOneBy({ userId });
-    // let newPaid = null;
-    // if (!paid || moment(paid).isBefore(moment())) {
-    //   newPaid = moment().add(1, duration).toDate();
-    // } else {
-    //   newPaid = moment(paid).add(1, duration).toDate();
-    // }
+    if (dto.key !== '200' && dto.key !== '1400') {
+      return 'fail';
+    }
+    const { id } = await this.userRepository.findOneBy({
+      email: dto.clientName.trim().toLocaleLowerCase(),
+    });
+    const { paid } = await this.optionRepository.findOneBy({ userId: id });
+    let newPaid = null;
+    const duration = Number(dto.key) === 200 ? 'month' : 'year';
 
-    // await this.optionRepository.update(
-    //   { userId },
-    //   {
-    //     paid: newPaid,
-    //   },
-    // );
+    if (!paid || moment(paid).isBefore(moment())) {
+      newPaid = moment().add(1, duration).toDate();
+    } else {
+      newPaid = moment(paid).add(1, duration).toDate();
+    }
+
+    await this.optionRepository.update(
+      { userId: id },
+      {
+        paid: newPaid,
+      },
+    );
+    return 'success';
   }
 }

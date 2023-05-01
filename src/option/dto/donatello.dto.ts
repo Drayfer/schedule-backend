@@ -1,6 +1,7 @@
 import {} from 'class-validator';
 
 export class donatelloDto {
+  key: string;
   pubId: string;
   clientName: string;
   message: string;
