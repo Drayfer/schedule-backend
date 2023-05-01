@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import axios from 'axios';
 import * as sha1 from 'sha-1';
+import { donatelloDto } from './dto/donatello.dto';
 
 interface IFondyMerchant {
   amount: string;
@@ -397,5 +398,24 @@ export class OptionService {
         paid: newPaid,
       },
     );
+  }
+
+  async confirmDonatello(dto: donatelloDto) {
+    console.log(dto);
+    // const { userId, duration } = JSON.parse(dto.merchant_data);
+    // const { paid } = await this.optionRepository.findOneBy({ userId });
+    // let newPaid = null;
+    // if (!paid || moment(paid).isBefore(moment())) {
+    //   newPaid = moment().add(1, duration).toDate();
+    // } else {
+    //   newPaid = moment(paid).add(1, duration).toDate();
+    // }
+
+    // await this.optionRepository.update(
+    //   { userId },
+    //   {
+    //     paid: newPaid,
+    //   },
+    // );
   }
 }

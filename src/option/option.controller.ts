@@ -13,6 +13,7 @@ import {
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { donatelloDto } from './dto/donatello.dto';
 
 @Controller('option')
 export class OptionController {
@@ -120,5 +121,14 @@ export class OptionController {
     if (dto.response_status === 'success') {
       return { url: `${process.env.CLIENT_URL}/dashboard?success` };
     }
+  }
+
+  @Post('/donatello')
+  @Redirect()
+  async confirmDonatello(@Body() dto: donatelloDto) {
+    await this.optionService.confirmDonatello(dto);
+    // if (dto.response_status === 'success') {
+    //   return { url: `${process.env.CLIENT_URL}/dashboard?success` };
+    // }
   }
 }
