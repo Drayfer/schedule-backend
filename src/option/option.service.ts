@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import axios from 'axios';
 import * as sha1 from 'sha-1';
 import { donatelloDto } from './dto/donatello.dto';
+import { BillingEntity } from './../billing/entities/billing.entity';
 
 interface IFondyMerchant {
   amount: string;
@@ -34,6 +35,8 @@ export class OptionService {
     private lessonRepository: Repository<LessonEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(BillingEntity)
+    private billingRepository: Repository<BillingEntity>,
   ) {}
 
   async findAll(id: number) {
@@ -332,8 +335,36 @@ export class OptionService {
   }
 
   async getBillingInfo(userId: number) {
-    const { createdDate } = await this.userRepository.findOneBy({ id: userId });
+    const { createdDate, email } = await this.userRepository.findOneBy({
+      id: userId,
+    });
     const { paid } = await this.optionRepository.findOneBy({ userId });
+
+    const { data } = await axios(
+      'https://diaka.ua/api/v1/message/stats?action=recent&conveyorHash=Qn2HjcSplySjdmWphWS382xUlCjNVtVK&params%5Blimit%5D=10&params%5Btest%5D=1',
+    );
+    const { diakaArr } = await this.billingRepository.findOneBy({ id: 1 });
+    if (JSON.stringify(data) !== JSON.stringify(diakaArr)) {
+      await this.billingRepository.update({ id: 1 }, { diakaArr: data });
+      if (email === data[0].name) {
+        const duration = data[0].amount < 100 ? 'month' : 'year';
+
+        let newPaid = null;
+        if (!paid || moment(paid).isBefore(moment())) {
+          newPaid = moment().add(1, duration).toDate();
+        } else {
+          newPaid = moment(paid).add(1, duration).toDate();
+        }
+
+        await this.optionRepository.update(
+          { userId },
+          {
+            paid: newPaid,
+          },
+        );
+      }
+    }
+
     const daysFromReg = moment().diff(moment(createdDate), 'days');
     const demo = daysFromReg < 30;
     const demoDays = demo ? 30 - daysFromReg : 0;

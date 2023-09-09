@@ -13,6 +13,8 @@ import { LessonModule } from './lesson/lesson.module';
 import { DisciplineModule } from './discipline/discipline.module';
 import { OptionModule } from './option/option.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BillingModule } from './billing/billing.module';
+import { BillingEntity } from './billing/entities/billing.entity';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         LessonEntity,
         DisciplineEntity,
         OptionEntity,
+        BillingEntity,
       ],
       synchronize: true,
       ssl: true,
@@ -47,6 +50,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     DisciplineModule,
     OptionModule,
     ScheduleModule.forRoot(),
+    BillingModule,
   ],
 })
 export class AppModule {}

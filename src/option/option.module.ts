@@ -7,6 +7,7 @@ import { Module } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { OptionController } from './option.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BillingEntity } from 'src/billing/entities/billing.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       OptionEntity,
       StudentEntity,
       LessonEntity,
+      BillingEntity,
     ]),
     AuthModule,
   ],
