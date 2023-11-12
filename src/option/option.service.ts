@@ -341,7 +341,7 @@ export class OptionService {
     const { paid } = await this.optionRepository.findOneBy({ userId });
 
     const { data } = await axios(
-      'https://diaka.ua/api/v1/message/stats?action=recent&conveyorHash=Qn2HjcSplySjdmWphWS382xUlCjNVtVK&params%5Blimit%5D=10&params%5Btest%5D=1',
+      'https://diaka.ua/api/v1/message/stats?action=recent&conveyorHash=ledVV43_827rc2Wroo7NLOs5tJrdfnja&params%5Blimit%5D=10&params%5Btest%5D=1',
     );
     const { diakaArr } = await this.billingRepository.findOneBy({ id: 1 });
     if (JSON.stringify(data) !== JSON.stringify(diakaArr)) {
