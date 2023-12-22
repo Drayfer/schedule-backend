@@ -13,7 +13,7 @@ import * as sha1 from 'sha-1';
 import { donatelloDto } from './dto/donatello.dto';
 import { BillingEntity } from './../billing/entities/billing.entity';
 import { JwtService } from '@nestjs/jwt';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 interface IFondyMerchant {
   amount: string;
@@ -466,6 +466,8 @@ export class OptionService {
       [key: string]: string;
     };
 
+    console.log(nodemailer);
+
     const transporter = nodemailer.createTransport({
       host: 'smtp.ukr.net',
       port: 465,
@@ -479,7 +481,7 @@ export class OptionService {
     await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL, // sender address
       to: 'teachers.app24@gmail.com', // list of receivers
-      subject: 'Check Access to T-App', // Subject line
+      subject: 'T-App - Check Access', // Subject line
       text: email, // plain text body
     });
 
