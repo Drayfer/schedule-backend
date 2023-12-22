@@ -12,6 +12,8 @@ import axios from 'axios';
 import * as sha1 from 'sha-1';
 import { donatelloDto } from './dto/donatello.dto';
 import { BillingEntity } from './../billing/entities/billing.entity';
+import { JwtService } from '@nestjs/jwt';
+import nodemailer from 'nodemailer';
 
 interface IFondyMerchant {
   amount: string;
@@ -37,6 +39,7 @@ export class OptionService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(BillingEntity)
     private billingRepository: Repository<BillingEntity>,
+    private jwtService: JwtService,
   ) {}
 
   async findAll(id: number) {
@@ -454,6 +457,32 @@ export class OptionService {
         paid: newPaid,
       },
     );
+    return 'success';
+  }
+
+  async yoomoneyMessage(bearer: string) {
+    const token = bearer.split(' ')[1];
+    const { email } = this.jwtService.decode(token) as {
+      [key: string]: string;
+    };
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ukr.net',
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: process.env.NODEMAILER_EMAIL, // generated ethereal user
+        pass: process.env.NODEMAILER_EMAIL_PASSWORD, // generated ethereal password
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.NODEMAILER_EMAIL, // sender address
+      to: 'teachers.app24@gmail.com', // list of receivers
+      subject: 'Check Access to T-App', // Subject line
+      text: email, // plain text body
+    });
+
     return 'success';
   }
 }
