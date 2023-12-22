@@ -466,8 +466,6 @@ export class OptionService {
       [key: string]: string;
     };
 
-    console.log(nodemailer);
-
     const transporter = nodemailer.createTransport({
       host: 'smtp.ukr.net',
       port: 465,
