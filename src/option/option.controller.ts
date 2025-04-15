@@ -15,7 +15,7 @@ import {
 import { OptionService } from './option.service';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { donatelloDto } from './dto/donatello.dto';
+import { donatelloDto, gumroadDto } from './dto/billing.dto';
 import { Request } from 'express';
 
 @Controller('option')
@@ -140,5 +140,14 @@ export class OptionController {
   @HttpCode(200)
   async yoomoneyMessage(@Req() request: Request) {
     return this.optionService.yoomoneyMessage(request.headers.authorization);
+  }
+
+  @Post('/gumroad')
+  @HttpCode(200)
+  async confirmGumroad(@Body() dto: gumroadDto) {
+    const data = await this.optionService.confirmGumroad(dto);
+    if (data === 'success') {
+      return 'ok';
+    }
   }
 }
