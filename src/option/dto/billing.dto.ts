@@ -12,3 +12,9 @@ export class donatelloDto {
   isPublished: boolean;
   createdAt: string;
 }
+
+export class gumroadDto {
+  permalink: string;
+  email: string;
+  recurrence: 'yearly' | 'monthly';
+}
