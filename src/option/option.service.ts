@@ -487,7 +487,10 @@ export class OptionService {
   }
 
   async confirmGumroad(dto: gumroadDto) {
-    if (dto.recurrence !== 'yearly' && dto.recurrence !== 'monthly') {
+    // if (dto.recurrence !== 'yearly' && dto.recurrence !== 'monthly') {
+    //   return 'fail';
+    // }
+    if (!dto.permalink.includes('month') || !dto.permalink.includes('year')) {
       return 'fail';
     }
     const { id } = await this.userRepository.findOneBy({
@@ -495,7 +498,7 @@ export class OptionService {
     });
     const { paid } = await this.optionRepository.findOneBy({ userId: id });
     let newPaid = null;
-    const duration = dto.recurrence === 'monthly' ? 'month' : 'year';
+    const duration = dto.permalink.includes('month') ? 'month' : 'year';
 
     if (!paid || moment(paid).isBefore(moment())) {
       newPaid = moment().add(1, duration).toDate();
