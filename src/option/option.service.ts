@@ -490,7 +490,7 @@ export class OptionService {
     // if (dto.recurrence !== 'yearly' && dto.recurrence !== 'monthly') {
     //   return 'fail';
     // }
-    if (!dto.permalink.includes('month') || !dto.permalink.includes('year')) {
+    if (!dto.permalink.includes('month') && !dto.permalink.includes('year')) {
       return 'fail';
     }
     const { id } = await this.userRepository.findOneBy({
