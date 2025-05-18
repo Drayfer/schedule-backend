@@ -27,6 +27,7 @@ import { BillingEntity } from './billing/entities/billing.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
+      schema: 'public',
       entities: [
         UserEntity,
         StudentEntity,
