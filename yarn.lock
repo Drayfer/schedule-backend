@@ -738,6 +738,11 @@
     consola "^2.15.0"
     node-fetch "^2.6.1"
 
+"@paddle/paddle-node-sdk@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@paddle/paddle-node-sdk/-/paddle-node-sdk-3.6.1.tgz#6f5e072b8bd0282036393388849a65627b8def45"
+  integrity sha512-6lDUj27MSciKkoL7rX8Y5cwtJCFCUNZmQHT2DwGnqlMJxY6uhlUYW5AftsLEj12HvAZG+sdcbfA4BY1Rh1Q5ZQ==
+
 "@selderee/plugin-htmlparser2@^0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@selderee/plugin-htmlparser2/-/plugin-htmlparser2-0.6.0.tgz#27e994afd1c2cb647ceb5406a185a5574188069d"
